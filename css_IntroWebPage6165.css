@@ -1,0 +1,91 @@
+
+.container{
+	width:100%
+	
+}
+.header {
+	background-color:#622870;
+	text-align: center;
+}
+
+.header h1{
+	color: #9E72A8;	
+	font-family:"Book Antiqua";
+}
+
+.header b {
+	padding: 0 40px;
+	color: #9E72A8;
+	font-size: 20px;
+	font-family:"Book Antiqua";
+}
+#topnav {
+	width: 600px;
+	margin: 0 auto;
+}
+
+.menu {
+	background-color:#98C261; 
+	height:500px; 
+	width:20%; 
+	float:left;
+}
+
+.menu h3{
+	margin-left: 5px;
+	color: #2C4E00;
+}
+
+.menu p{
+	color:#2C4E00;
+	display:block;
+	margin-left: 10px
+}
+.content {
+	background-color:white; 
+	height:500px; 
+	width:80%; 
+	float:right;
+}
+
+.profileimg {
+	width: 200px;
+}
+
+#aboutme {
+	position: relative;
+	bottom: 200px;
+	left: 260px;
+}
+
+#research {
+	position: relative;
+	bottom: 120px;
+	left: 20px;
+	
+}
+.footer {
+	background-color:#D4C76A; 
+	clear:both; 
+	text-align:center;
+}
+
+.footer p {
+	font-size: 12px;
+	font-family:"Book Antiqua";
+	color: #554A00
+}
+
+
+.footer b{
+	padding: 0 40px;
+	color: #622870;
+	font-size: 16px;
+	font-family:"Book Antiqua";	
+}
+
+#bottomnav {
+	width: 600px;
+	margin: 0 auto;	
+}
+
