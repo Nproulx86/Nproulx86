@@ -1,7 +1,208 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with Github Pages.</p>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>Water Use, Surface Water Supply and Drought in Colorado</title>
+		<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 95%;
+			width: 100%;
+		}
+		</style>
+		<link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/css/main.css">  <!-- References ArcGIS API for JavaScript  -->
+		<link rel="stylesheet" type="text/css" href="FinalProjCss_Proulx.css"/>            <!-- References css stylesheet for header and footer -->
+		<script src="https://js.arcgis.com/4.7/"></script>                          <!-- Loads ArcGIS API for JavaScript -->
+		<script>
+		require([
+			"esri/Map",                      //Load modules for map, mapview and widgets
+			"esri/views/MapView",
+			"esri/widgets/BasemapToggle",
+			"esri/widgets/ScaleBar",
+			"esri/layers/FeatureLayer",
+			"esri/widgets/Legend",
+			"esri/widgets/LayerList",
+			"dojo/domReady!"], 
+		function(Map, MapView, BasemapToggle, ScaleBar, FeatureLayer, Legend, LayerList){   //Allow function to receive input from modules
+		var map = new Map({            //Create map object with topo basemap
+			basemap: "topo"
+		});
+		var view = new MapView({     //Create map view and set properties of view below
+			container: "viewDiv",  // Reference to the DOM node that will contain the view
+			map: map,  // Reference to the map object created above
+			zoom: 7,  // Sets the zoom level based on level of detail (LOD)
+			center: [-105, 39.5] // Sets the center point of view in lon/lat
+		});
+		var scalebar = new ScaleBar ({   //Create scale bar object
+			view: view,
+			unit: "dual"
+			});
+			view.ui.add (scalebar, {     //Add scale bar to map view
+				position: "bottom-left"
+			});
+		var popupPerCap = {              //Create popup template object describing Per Capita Use layer
+			title: "Per Capita Water Use in {NAME} County",  //Title for popup and popup text below in content
+			content: "For the year 2010, the per capita water use for this county was <b>{PerCapitaUse}</b> gallons per day.",
+			fieldInfos: [{
+				fieldName: "PerCapitaUse",      
+				format: {
+					digitSeparator: true,      //Format numbers with commas 
+					places: 2                  //Format numbers to have 2 decimal places
+				}
+			}]
+		};
+		var popupApplication = {        //Create popup template object describing Percent by Application layer
+			title: "Percent of Total Water Withdrawls by Application for {NAME} County",
+			content: "Public: {PcntPublic}<br>" + "Domestic: {PcntDomes}<br>" + "Industrial: {PcntIndust}<br>" + 
+			"Irrigation: {PcntIrr}<br>" + "Livestock: {PcntLivest}<br>" + "Aquaculture: {PcntAqc}<br>" + 
+			"Mining: {PcntMining}<br>" + "Thermoelectricity: {PcntThermo}",
+			type: "fields",
+			fieldInfos: [{
+				fieldName: "PcntPublic",       //Format numbers for each field used in popup content
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntDomes",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntIndust",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntIrr",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntLivest",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntAqc",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntMining",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}, {
+				fieldName: "PcntThermo",
+				format: {
+					digitSeparator: true,
+					places: 2
+				}
+			}]
+		};
+		
+		var popupSWSI = {        //Create popup template object describing SWSI layer
+			title: "Surface Water Supply Index for the {BASIN} River Basin for March, 2018",
+			content: "Current SWSI: {SWSI}<br>" + "Non-exceedance Probability: {NEP} <br>" 
+			+ "Previous Month SWSI: {SWSI_Previous_Month}<br>" + "Previous Year SWSI: {SWSI_Previous_Year}<br>"
+			+ "SWSI value is an indicator of water supply conditions in Colorado's river basins.  The value range is 4.16 to -4.16."  
+			+ "A value above 3 indicates abundant supply, below -3 indicates extreme drought, and -0.9 to 0.9 indicates near normal.<br>"
+			+ "Non-exceedance Probability indicates how often the current volume of water in the river basin has been exceeded during the" 
+			+ "same month of the historical period.  A value of 50 is considered normal, 0 indicates extreme drought and 100 indicates abundant water supply."
+		};
+		var popupDM = {         //Create popup template object describing DM layer
+			title: "Drought Monitor for Zip Code {ZCTA5CE10}",
+			content: "Drought Intensity: {DM}<br>" + "Drought conditions current as of April 4th, 2018."
+		};
+		var PerCapita = new FeatureLayer ({  //Create Per Capita Use layer object
+			url:"http://cipher.digit.utah.edu:6080/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/3",  //location of layer
+			title: "Per Capita Water Use",   //layer title
+			visible: true,     //make layer visible at initial map load
+			outFields: ["*"],
+			popupTemplate: popupPerCap,  //reference popup template object for per capita use layer
+			opacity: "0.4"             //Set opacity to 40%
+			});
+		var PercentByApplication = new FeatureLayer ({   //Create Percent by application layer object
+			url:"http://cipher.digit.utah.edu:6080/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/2",   //location of layer
+			title: "Percentage of Total Water Withdrawls by Application",   //layer title
+			visible: false,   //make layer not visible at initial map load
+			outFields: ["*"],
+			popupTemplate: popupApplication,  //reference popup template object for percent by application layer
+			opacity: "0.3"       //set opacity to 30%
+			});
+		var SWSI = new FeatureLayer ({    //Create SWSI layer object
+			url: "http://cipher.digit.utah.edu:6080/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/1",   //layer location
+			title: "Surface Water Supply Index",  //layer title
+			visible: false,           //make layer not visible at initial map load
+			outFields: ["*"],
+			popupTemplate: popupSWSI,    //reference popup template object for SWSI layer
+			opacity: "0.6"        //set opacity to 60%
+			});
+		var DM = new FeatureLayer ({    //Create DM layer object
+			url: "http://cipher.digit.utah.edu:6080/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/0",   //layer location
+			title: "Drought Monitor",     //layer title
+			visible: false,            //make layer not visible at initial map load
+			outFields: ["*"],
+			popupTemplate: popupDM,    //reference popup template object for DM layer
+			opacity: "0.5"         //set opacity 50%
+			});
+		
+		map.addMany([PerCapita, PercentByApplication, SWSI, DM]);   //add all layer objects to map object
+		var legend = new Legend({     //create legend object
+			view: view,
+			layerInfos: [{            //Set legend titles for each layer
+					layer: PerCapita,
+					title: "Per Capita Water Use"
+				},
+				{
+					layer: PercentByApplication,
+					title: "Percent of Total Water Withdrawls by Application"
+				},
+				{
+					layer: SWSI,
+					title: "Surface Water Supply Index"
+				},
+				{	
+					layer: DM,
+					title: "Drought Monitor"
+				}]
+		});
+		view.ui.add(legend, {         //add legend object to map view
+			position: "bottom-right"  //in the bottom right corner
+		});
+		var layerList = new LayerList({   //create layer list object
+			view: view,
+			});
+		view.ui.add(layerList, {     //add layer list object to map view
+			position: "top-left"     //in the upper left corner
+		});
+		var toggle = new BasemapToggle({  //create basemap toggle object
+			view: view,
+			nextBasemap: "hybrid"     //set second basemap type
+			});
+		view.ui.add(toggle, {         //add basemap toggle object to mapview  
+			position: "top-right"     //in the upper right corner
+		});
+	});
+		
+		</script>
+	</head>
+	<body> 
+		<div class="header">    <!-- Create header class for styling -->
+			<h1>Water Use, Surface Water Supply and Drought in Colorado</h1>   <!-- Header text -->
+		</div>
+		<div class="footer">   <!-- Create footer class for styling -->
+			<p>Copyright <strong>Nicole Proulx</strong> 2018.  All rights reserved.</p>	 <!-- Footer text -->
+		</div>
+		<div id= "viewDiv"></div>   <!-- Where map view will be created -->
+	</body>
 </html>
