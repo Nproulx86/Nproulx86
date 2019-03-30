@@ -128,7 +128,7 @@
 			content: "Drought Intensity: {DM}<br>" + "Drought conditions current as of April 4th, 2018."
 		};
 		var PerCapita = new FeatureLayer ({  //Create Per Capita Use layer object
-			url:"https://services1.arcgis.com/2exN3kG1f2h7coIQ/arcgis/rest/services/Co_counties_ForWeb_gdb/FeatureServer/3",  //location of layer
+			url:"https://webgis1.digit.utah.edu/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/3",  //location of layer
 			title: "Per Capita Water Use",   //layer title
 			visible: true,     //make layer visible at initial map load
 			outFields: ["*"],
@@ -136,7 +136,7 @@
 			opacity: "0.4"             //Set opacity to 40%
 			});
 		var PercentByApplication = new FeatureLayer ({   //Create Percent by application layer object
-			url:"https://services1.arcgis.com/2exN3kG1f2h7coIQ/arcgis/rest/services/Co_counties_ForWeb_gdb/FeatureServer/2",   //location of layer
+			url:"https://webgis1.digit.utah.edu/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/2",   //location of layer
 			title: "Percentage of Total Water Withdrawls by Application",   //layer title
 			visible: false,   //make layer not visible at initial map load
 			outFields: ["*"],
@@ -144,7 +144,7 @@
 			opacity: "0.3"       //set opacity to 30%
 			});
 		var SWSI = new FeatureLayer ({    //Create SWSI layer object
-			url: "http://cipher.digit.utah.edu:6080/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/1",   //layer location
+			url: "https://webgis1.digit.utah.edu/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/1",   //layer location
 			title: "Surface Water Supply Index",  //layer title
 			visible: false,           //make layer not visible at initial map load
 			outFields: ["*"],
@@ -152,7 +152,7 @@
 			opacity: "0.6"        //set opacity to 60%
 			});
 		var DM = new FeatureLayer ({    //Create DM layer object
-			url: "https://services1.arcgis.com/2exN3kG1f2h7coIQ/arcgis/rest/services/Co_counties_ForWeb_gdb/FeatureServer/0",   //layer location
+			url: "https://webgis1.digit.utah.edu/arcgis/rest/services/Proulx/CoCountiesWaterMap/MapServer/0",   //layer location
 			title: "Drought Monitor",     //layer title
 			visible: false,            //make layer not visible at initial map load
 			outFields: ["*"],
